@@ -16,6 +16,7 @@ def click_element_css_selector(css_selector):
 def click_element_web_element(web_element):
     web_element.click()
 
+
 def clear_and_write_on_element(css_selector, text_to_write):
     web_element = driver.find_element_by_css_selector(css_selector)
     web_element.send_keys(text_to_write)
@@ -28,12 +29,28 @@ def wait_until_element_is_clickable(css_selector):
 
 
 def get_random_number(begin, finish):
-    return random.randint(begin, finish-1)
+    return random.randint(begin, finish - 1)
 
 
 def move_to_element(web_element):
     action_chains = ActionChains(driver)
     action_chains.move_to_element(web_element)
+
+
+def move_to_new_window_and_close():
+    windows_list = driver.window_handles
+    print(len(windows_list))
+    if len(windows_list) > 1:
+        print("I am getting executed")
+        driver.switch_to.window(windows_list[1])
+        driver.close()
+        driver.switch_to.window(windows_list[0])
+
+
+def move_to_new_window():
+    windows_list = driver.window_handles
+    if len(windows_list) > 1:
+        driver.switch_to.window(windows_list[1])
 
 
 if __name__ == "__main__":
@@ -86,15 +103,44 @@ if __name__ == "__main__":
             assert comparable_number >= i, "The list is not sorted correctly"
             comparable_number = i
 
-        # create a list of Select button
-        list_current_select_button = driver.find_elements_by_xpath("//button[contains(@class,'t-select-btn')]")
-        random_number = get_random_number(0,len(list_current_select_button))
-        print(random_number)
-        move_to_element(list_current_select_button[random_number])
-        click_element_web_element(list_current_select_button[random_number])
+        # select departing flight and get airline name
+        list_current_select_button_origin = driver.find_elements_by_xpath("//button[contains(@class,'t-select-btn')]")
+        random_number = get_random_number(0, len(list_current_select_button_origin))
+        move_to_element(list_current_select_button_origin[random_number])
+        list_airline = driver.find_elements_by_xpath("(//div[@class='bColumn']//span[@data-test-id='airline-name'])")
+        name_airline_origin = list_airline[random_number].text.strip()
+        click_element_web_element(list_current_select_button_origin[random_number])
+
+        # close add window if is needed
+        move_to_new_window_and_close()
+
+        time.sleep(4)
+
+        # select returning flight and get airline name
+        list_current_select_button_destination = driver.find_elements_by_xpath(
+            "//button[contains(@class,'t-select-btn')]")
+        random_number = get_random_number(0, len(list_current_select_button_destination))
+        move_to_element(list_current_select_button_destination[random_number])
+        list_airline = driver.find_elements_by_xpath("(//div[@class='bColumn']//span[@data-test-id='airline-name'])")
+        name_airline_destination = list_airline[random_number].text.strip()
+        click_element_web_element(list_current_select_button_destination[random_number])
+
+        # move to the resume page after select both flights
+        move_to_new_window()
+
+        # hardcode time sleep TODO search how to execute JavaScript or if python has already a method
+        time.sleep(8)
+
+        # get airline names from Resume Page
+        airline_origin_resume_page = driver.find_element_by_css_selector(
+            "body > main > section.flightSummaryContainer.uitk-col > div.uitk-grid.all-x-gutter-12.flex-listing.flightSummary.desktop-x-gutter-0.tablet-x-gutter-0.smalltablet-x-gutter-0.mobile-x-gutter-0 > div.flex-card.flex-tile.details.OD0 > div > div > div.airlineName").text
+        airline_destination_resume_page = driver.find_element_by_css_selector(
+            "body > main > section.flightSummaryContainer.uitk-col > div.uitk-grid.all-x-gutter-12.flex-listing.flightSummary.desktop-x-gutter-0.tablet-x-gutter-0.smalltablet-x-gutter-0.mobile-x-gutter-0 > div.flex-card.flex-tile.details.OD1 > div > div > div.airlineName").text
+
+        # check if the airline names are the same as in Resume page
+        assert airline_origin_resume_page == name_airline_origin, "Destination airline is not the same as Resume Page"
+        assert airline_destination_resume_page == name_airline_destination, "Destination airline is not the same as Resume Page"
 
         # this has to be in a method
-
     finally:
         driver.quit()
-
