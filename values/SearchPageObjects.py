@@ -1,0 +1,7 @@
+icon_flight_button = "#tab-flight-tab-hp"
+txt_origin_place = "#flight-origin-hp-flight"
+ddl_first_option = "#aria-option-0"
+txt_destination_place = "#flight-destination-hp-flight"
+txt_departing_date = "#flight-departing-hp-flight"
+txt_returning_date = "#flight-returning-hp-flight"
+btn_search = "#gcw-flights-form-hp-flight > div.cols-nested.ab25184-submit > label > button"

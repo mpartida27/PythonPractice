@@ -24,7 +24,6 @@ def clear_and_write_on_element(css_selector, text_to_write):
 
 def wait_until_element_is_clickable(css_selector):
     wait = WebDriverWait(driver, 20)
-    # que pedo con esto 0.0 (le estoy enviando una tupla?)
     wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, css_selector)))
 
 
