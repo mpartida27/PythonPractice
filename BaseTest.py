@@ -7,9 +7,7 @@ from selenium.webdriver import ActionChains
 
 
 class Driver:
-
-    def __init__(self):
-        self.driver = webdriver.Chrome("/Users/drivers/chromedriver")
+    driver = webdriver.Chrome("/Users/drivers/chromedriver")
 
     def navigate(self, url="https://www.expedia.com"):
         self.driver.maximize_window()
