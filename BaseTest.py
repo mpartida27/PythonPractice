@@ -3,11 +3,20 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import random
+import time
 from selenium.webdriver import ActionChains
+
+from seleniumscripts.values import CommonResultsPageObjects
 
 
 class Driver:
     driver = webdriver.Chrome("/Users/drivers/chromedriver")
+    name_airline_origin = None
+    name_airline_destination = None
+
+    @classmethod
+    def test_class_method(cls):
+        cls.driver.current_url
 
     def navigate(self, url="https://www.expedia.com"):
         self.driver.maximize_window()
@@ -23,7 +32,8 @@ class Driver:
         current_by_element = self.driver.find_element_by_css_selector(by_element)
         current_by_element.click()
 
-    def click_element_web_element(self, web_element):
+    @staticmethod
+    def click_element_web_element(web_element):
         web_element.click()
 
     def clear_and_write_on_element(self, css_selector, text_to_write):
@@ -54,3 +64,22 @@ class Driver:
         windows_list = self.driver.window_handles
         if len(windows_list) > 1:
             self.driver.switch_to.window(windows_list[1])
+
+    @staticmethod
+    def wait_for_x_secs(secs):
+        time.sleep(secs)
+
+    def click_any_flight_and_get_names(self):
+        list_current_select_button_destination = self.driver.find_elements_by_xpath(CommonResultsPageObjects.btn_selection)
+        random_number = self.get_random_number(0, len(list_current_select_button_destination))
+        self.move_to_element(list_current_select_button_destination[random_number])
+        list_airline = self.driver.find_elements_by_xpath(CommonResultsPageObjects.lbl_airline)
+        if self.name_airline_origin is None:
+            self.name_airline_origin = list_airline[random_number].text.strip()
+        elif self.name_airline_destination is None:
+            self.name_airline_destination = list_airline[random_number].text.strip()
+        print(self.name_airline_origin)
+        print( self.name_airline_destination)
+        self.click_element_web_element(list_current_select_button_destination[random_number])
+
+

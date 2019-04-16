@@ -17,6 +17,8 @@ class TestExpedia(unittest.TestCase):
         search_page.fill_flight_form()
         results_departing_page = DepartingResultsPage()
         results_departing_page.select_descendant_drop_down_list()
+        results_departing_page.get_prices_and_check_order()
+        results_departing_page.click_any_flight()
 
     def tearDown(self):
         self.driver_.close_driver()

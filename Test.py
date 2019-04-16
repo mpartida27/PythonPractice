@@ -54,6 +54,10 @@ def move_to_new_window():
 
 if __name__ == "__main__":
     try:
+        import random
+
+        options = ["la ruina", "london"]
+        print(random.choice(options))
         # this has to be in a method
         driver = webdriver.Chrome("/Users/drivers/chromedriver")
         driver.set_page_load_timeout(10)
